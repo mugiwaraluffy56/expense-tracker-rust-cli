@@ -1,3 +1,4 @@
+use chrono::{NaiveDate, Local};
 use clap::{Parser, Subcommand, Args, ValueEnum};
 
 #[derive(Parser)]
@@ -13,6 +14,7 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Command {
+    Create(CreateArgs),
     Add(AddArgs),
 }
 
@@ -28,9 +30,15 @@ enum Category {
 struct AddArgs {
     category: Category,
     amount: f64,
+    date: Option<NaiveDate>,
 
     #[arg(long, short)]
     m: Option<String>,
+}
+
+#[derive(Args)]
+struct CreateArgs {
+    db_name: String,
 }
 
 fn main() {
@@ -40,7 +48,15 @@ fn main() {
         Command::Add(args) => {
             println!("Category: {:?}", args.category);
             println!("Amount: {}", args.amount);
-            println!("Note: {:?}", args.m)
+            println!("Note: {:?}", args.m);
+            let date = args.date.unwrap_or_else(|| {
+                Local::now().date_naive()
+            });
+            println!("Date: {:?}", date)
+        },
+
+        Command::Create(args) => {
+            println!("Created a new database named {}.", args.db_name)
         }
     }
 }
