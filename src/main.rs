@@ -1,18 +1,46 @@
-use clap::Parser;
+use clap::{Parser, Subcommand, Args, ValueEnum};
 
 #[derive(Parser)]
-#[command(
-    name = "ept",
-    version,
-    about = "A rust based high perfomance simple expense tracker CLI.",
-    long_about = None
+#[command(version,
+    about = "A rust based expense tracker CLI.",
+    author = "Puneeth Aditya",
+    propagate_version = true,
 )]
-struct Args {
-    #[arg(short, long)]
-    file: String,
+struct Cli {
+    #[command(subcommand)]
+    command: Command,
+}
+
+#[derive(Subcommand)]
+enum Command {
+    Add(AddArgs),
+}
+
+#[derive(Debug)]
+#[derive(Clone, ValueEnum)]
+enum Category {
+    Food,
+    Shopping,
+    Subscriptions,
+}
+
+#[derive(Args)]
+struct AddArgs {
+    category: Category,
+    amount: f64,
+
+    #[arg(long, short)]
+    m: Option<String>,
 }
 
 fn main() {
-    let args = Args::parse();
-    println!("File: {}", args.file)
+    let cli = Cli::parse();
+
+    match &cli.command {
+        Command::Add(args) => {
+            println!("Category: {:?}", args.category);
+            println!("Amount: {}", args.amount);
+            println!("Note: {:?}", args.m)
+        }
+    }
 }
