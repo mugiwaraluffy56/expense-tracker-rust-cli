@@ -14,12 +14,11 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Command {
-    Create(CreateArgs),
+    Init(CreateArgs),
     Add(AddArgs),
 }
 
-#[derive(Debug)]
-#[derive(Clone, ValueEnum)]
+#[derive(Debug, Clone, ValueEnum)]
 enum Category {
     Food,
     Shopping,
@@ -33,7 +32,7 @@ struct AddArgs {
     date: Option<NaiveDate>,
 
     #[arg(long, short)]
-    m: Option<String>,
+    note: Option<String>,
 }
 
 #[derive(Args)]
@@ -48,14 +47,14 @@ fn main() {
         Command::Add(args) => {
             println!("Category: {:?}", args.category);
             println!("Amount: {}", args.amount);
-            println!("Note: {:?}", args.m);
-            let date = args.date.unwrap_or_else(|| {
+            println!("Note: {:?}", args.note);
+            let date = args.date.unwrap_or(
                 Local::now().date_naive()
-            });
-            println!("Date: {:?}", date)
+            );
+            println!("Date: {}", date)
         },
 
-        Command::Create(args) => {
+        Command::Init(args) => {
             println!("Created a new database named {}.", args.db_name)
         }
     }
