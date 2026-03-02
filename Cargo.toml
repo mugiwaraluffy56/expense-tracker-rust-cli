@@ -3,6 +3,11 @@ name = "expense-tracker-cli"
 version = "0.1.0"
 edition = "2024"
 
+[[bin]]
+name = "ept"
+path = "src/main.rs"
+
 [dependencies]
 clap = { version = "4", features = ["derive"] }
 chrono = "0.4"
+rusqlite = { version = "0.31", features = ["bundled", "chrono"] }
